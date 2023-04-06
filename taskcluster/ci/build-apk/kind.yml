@@ -13,6 +13,7 @@ transforms:
 kind-dependencies:
     - toolchain
     - external-gradle-dependencies
+    - generate-baseline-profiles
 
 task-defaults:
     apk-artifact-template:
@@ -164,7 +165,6 @@ tasks:
         source-project-name: "focus-android"
         treeherder:
             symbol: focus-nightly(B)
-            platform: focus-android-all/opt
 
     fenix-nightly:
         description: 'Nightly fenix build'
@@ -175,6 +175,7 @@ tasks:
             shipping-product: fenix
         dependencies:
             external-gradle-dependencies: external-gradle-dependencies-fenix
+            generate-baseline-profiles: generate-baseline-profiles-fenix
         include-shippable-secrets: true
         include-nightly-version: true
         source-project-name: "fenix"
