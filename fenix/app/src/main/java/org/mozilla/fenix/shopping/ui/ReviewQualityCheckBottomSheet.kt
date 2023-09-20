@@ -76,6 +76,9 @@ fun ReviewQualityCheckBottomSheet(
                             ),
                         )
                     },
+                    onAnalysisCompleteConfirmationClick = {
+                        store.dispatch(ReviewQualityCheckAction.FetchProductAnalysis)
+                    },
                 )
             }
 
@@ -99,6 +102,7 @@ private fun ProductReview(
     onProductRecommendationsEnabledStateChange: (Boolean) -> Unit,
     onReviewGradeLearnMoreClick: (String) -> Unit,
     onFooterLinkClick: (String) -> Unit,
+    onAnalysisCompleteConfirmationClick: () -> Unit,
 ) {
     Crossfade(
         targetState = state.productReviewState,
@@ -114,11 +118,13 @@ private fun ProductReview(
                     onProductRecommendationsEnabledStateChange = onProductRecommendationsEnabledStateChange,
                     onReviewGradeLearnMoreClick = onReviewGradeLearnMoreClick,
                     onFooterLinkClick = onFooterLinkClick,
+                    onAnalysisCompleteConfirmationClick = onAnalysisCompleteConfirmationClick,
                 )
             }
 
             is ReviewQualityCheckState.OptedIn.ProductReviewState.Error -> {
                 ProductAnalysisError(
+                    error = productReviewState,
                     productRecommendationsEnabled = state.productRecommendationsPreference,
                     onReviewGradeLearnMoreClick = onReviewGradeLearnMoreClick,
                     onOptOutClick = onOptOutClick,

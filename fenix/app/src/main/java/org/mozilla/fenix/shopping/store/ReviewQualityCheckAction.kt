@@ -70,6 +70,11 @@ sealed interface ReviewQualityCheckAction : Action {
     data class UpdateProductReview(val productReviewState: ProductReviewState) : UpdateAction
 
     /**
+     * Triggered when the user clicks confirm on the analysis completed card.
+     */
+    object AnalysisCompleteConfirmation : UpdateAction
+
+    /**
      * Triggered when the user has opted in to the review quality check feature and the UI is opened.
      */
     object FetchProductAnalysis : NetworkAction, UpdateAction

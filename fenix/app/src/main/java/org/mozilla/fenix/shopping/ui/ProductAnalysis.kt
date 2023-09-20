@@ -66,6 +66,7 @@ fun ProductAnalysis(
     onProductRecommendationsEnabledStateChange: (Boolean) -> Unit,
     onReviewGradeLearnMoreClick: (String) -> Unit,
     onFooterLinkClick: (String) -> Unit,
+    onAnalysisCompleteConfirmationClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -82,12 +83,28 @@ fun ProductAnalysis(
             }
 
             AnalysisStatus.COMPLETED -> {
-                // TBD
+                ReanalysisCompletedCard(onAnalysisCompleteConfirmationClick)
             }
 
             AnalysisStatus.UP_TO_DATE -> {
                 // no-op
             }
+        }
+
+        if (productAnalysis.notEnoughReviewsCardVisible) {
+            ReviewQualityCheckInfoCard(
+                title = stringResource(id = R.string.review_quality_check_no_reviews_warning_title),
+                description = stringResource(id = R.string.review_quality_check_no_reviews_warning_body),
+                type = ReviewQualityCheckInfoType.Info,
+                modifier = Modifier.fillMaxWidth(),
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.mozac_ic_information_fill_24),
+                        contentDescription = null,
+                        tint = FirefoxTheme.colors.iconPrimary,
+                    )
+                },
+            )
         }
 
         if (productAnalysis.reviewGrade != null) {
@@ -129,6 +146,26 @@ fun ProductAnalysis(
             onLinkClick = onFooterLinkClick,
         )
     }
+}
+
+@Composable
+private fun ReanalysisCompletedCard(
+    onAnalysisCompleteConfirmationClick: () -> Unit,
+) {
+    ReviewQualityCheckInfoCard(
+        title = stringResource(id = R.string.review_quality_check_analysis_updated_confirmation_title),
+        type = ReviewQualityCheckInfoType.Confirmation,
+        buttonText = stringResource(id = R.string.review_quality_check_analysis_updated_confirmation_action),
+        onButtonClick = onAnalysisCompleteConfirmationClick,
+        modifier = Modifier.fillMaxWidth(),
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.mozac_ic_information_fill_24),
+                contentDescription = null,
+                tint = FirefoxTheme.colors.iconPrimary,
+            )
+        },
+    )
 }
 
 @Composable
@@ -418,6 +455,7 @@ private fun ProductAnalysisPreview() {
                 },
                 onReviewGradeLearnMoreClick = {},
                 onFooterLinkClick = {},
+                onAnalysisCompleteConfirmationClick = {},
             )
         }
     }

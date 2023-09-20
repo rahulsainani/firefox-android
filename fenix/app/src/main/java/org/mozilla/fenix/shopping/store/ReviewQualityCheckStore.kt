@@ -5,6 +5,7 @@
 package org.mozilla.fenix.shopping.store
 
 import mozilla.components.lib.state.Store
+import org.mozilla.fenix.shopping.store.ReviewQualityCheckState.OptedIn.ProductReviewState
 import org.mozilla.fenix.shopping.store.ReviewQualityCheckState.OptedIn.ProductReviewState.AnalysisPresent.AnalysisStatus
 
 /**
@@ -13,9 +14,10 @@ import org.mozilla.fenix.shopping.store.ReviewQualityCheckState.OptedIn.ProductR
  * @param middleware The list of middlewares to use.
  */
 class ReviewQualityCheckStore(
+    initialState: ReviewQualityCheckState = ReviewQualityCheckState.Initial,
     middleware: List<ReviewQualityCheckMiddleware>,
 ) : Store<ReviewQualityCheckState, ReviewQualityCheckAction>(
-    initialState = ReviewQualityCheckState.Initial,
+    initialState = initialState,
     middleware = middleware,
     reducer = ::reducer,
 ) {
@@ -74,26 +76,42 @@ private fun mapStateForUpdateAction(
 
         ReviewQualityCheckAction.FetchProductAnalysis, ReviewQualityCheckAction.RetryProductAnalysis -> {
             state.mapIfOptedIn {
-                it.copy(productReviewState = ReviewQualityCheckState.OptedIn.ProductReviewState.Loading)
+                it.copy(productReviewState = ProductReviewState.Loading)
             }
         }
 
         ReviewQualityCheckAction.ReanalyzeProduct -> {
             state.mapIfOptedIn {
                 when (it.productReviewState) {
-                    is ReviewQualityCheckState.OptedIn.ProductReviewState.AnalysisPresent -> {
+                    is ProductReviewState.AnalysisPresent -> {
                         val productReviewState =
                             it.productReviewState.copy(analysisStatus = AnalysisStatus.REANALYZING)
                         it.copy(productReviewState = productReviewState)
                     }
 
-                    is ReviewQualityCheckState.OptedIn.ProductReviewState.NoAnalysisPresent -> {
+                    is ProductReviewState.NoAnalysisPresent -> {
                         it.copy(productReviewState = it.productReviewState.copy(isReanalyzing = true))
                     }
 
                     else -> {
                         it
                     }
+                }
+            }
+        }
+
+        ReviewQualityCheckAction.AnalysisCompleteConfirmation -> {
+            state.mapIfOptedIn {
+                if ((it.productReviewState is ProductReviewState.AnalysisPresent) &&
+                    (it.productReviewState.analysisStatus == AnalysisStatus.COMPLETED)
+                ) {
+                    it.copy(
+                        productReviewState = it.productReviewState.copy(
+                            analysisStatus = AnalysisStatus.UP_TO_DATE,
+                        ),
+                    )
+                } else {
+                    it
                 }
             }
         }

@@ -19,6 +19,7 @@ import org.mozilla.fenix.shopping.middleware.ReviewQualityCheckNetworkMiddleware
 import org.mozilla.fenix.shopping.middleware.ReviewQualityCheckPreferences
 import org.mozilla.fenix.shopping.middleware.ReviewQualityCheckPreferencesMiddleware
 import org.mozilla.fenix.shopping.middleware.ReviewQualityCheckService
+import org.mozilla.fenix.shopping.store.ReviewQualityCheckState.OptedIn.ProductReviewState.AnalysisPresent.AnalysisStatus
 
 class ReviewQualityCheckStoreTest {
 
@@ -231,6 +232,34 @@ class ReviewQualityCheckStoreTest {
 
             val expected = ReviewQualityCheckState.OptedIn(
                 productReviewState = ReviewQualityCheckState.OptedIn.ProductReviewState.Error.NetworkError,
+                productRecommendationsPreference = false,
+            )
+            assertEquals(expected, tested.state)
+        }
+
+    @Test
+    fun `GIVEN the analysis completed card is displayed WHEN use clicks the confirmation button THEN the card should be dismissed`() =
+        runTest {
+            val tested = ReviewQualityCheckStore(
+                initialState = ReviewQualityCheckState.OptedIn(
+                    productReviewState = ProductAnalysisTestData.analysisPresent(
+                        analysisStatus = AnalysisStatus.COMPLETED,
+                    ),
+                    productRecommendationsPreference = false,
+                ),
+                middleware = emptyList(),
+            )
+            tested.waitUntilIdle()
+            dispatcher.scheduler.advanceUntilIdle()
+            tested.waitUntilIdle()
+            tested.dispatch(ReviewQualityCheckAction.AnalysisCompleteConfirmation).joinBlocking()
+            tested.waitUntilIdle()
+            dispatcher.scheduler.advanceUntilIdle()
+
+            val expected = ReviewQualityCheckState.OptedIn(
+                productReviewState = ProductAnalysisTestData.analysisPresent(
+                    analysisStatus = AnalysisStatus.UP_TO_DATE,
+                ),
                 productRecommendationsPreference = false,
             )
             assertEquals(expected, tested.state)
