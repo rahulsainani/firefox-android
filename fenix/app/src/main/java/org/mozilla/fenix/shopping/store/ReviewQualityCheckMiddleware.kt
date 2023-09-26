@@ -4,9 +4,9 @@
 
 package org.mozilla.fenix.shopping.store
 
-import mozilla.components.lib.state.Middleware
+import mozilla.components.lib.state.MiddlewareV2
 
 /**
  * Middleware typealias for review quality check.
  */
-typealias ReviewQualityCheckMiddleware = Middleware<ReviewQualityCheckState, ReviewQualityCheckAction>
+typealias ReviewQualityCheckMiddleware = MiddlewareV2<ReviewQualityCheckState, ReviewQualityCheckAction>

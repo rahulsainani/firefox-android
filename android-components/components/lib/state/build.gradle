@@ -45,6 +45,7 @@ dependencies {
     implementation ComponentsDependencies.androidx_fragment
     implementation ComponentsDependencies.androidx_compose_ui
     implementation ComponentsDependencies.androidx_lifecycle_process
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
 
     implementation project(':support-base')
     implementation project(':support-ktx')
@@ -56,6 +57,7 @@ dependencies {
     testImplementation ComponentsDependencies.androidx_compose_ui_test
     testImplementation ComponentsDependencies.testing_robolectric
     testImplementation ComponentsDependencies.testing_coroutines
+    testImplementation 'app.cash.turbine:turbine:1.0.0'
 
     androidTestImplementation ComponentsDependencies.androidx_test_junit
     androidTestImplementation ComponentsDependencies.androidx_compose_ui_test_manifest
